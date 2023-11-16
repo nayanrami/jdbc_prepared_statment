@@ -32,9 +32,23 @@ public class EmployeeDAOImpl implements EmployeeDAO{
         try {
             statement = connection.prepareStatement(query);
 
-            statement.setLong(1,employee.get);
-
-            statement.execute(query);
+            try {
+                BufferedReader bif = new BufferedReader(new FileReader(new File("/Users/nayanmali/Downloads/MOCK_DATA.csv")));
+                String data;
+                while((data = bif.readLine())!=null){
+                    System.out.println(data);
+                    String dataprocess[] = data.split(",");
+                    statement.setLong(1, Long.parseLong(dataprocess[0]));
+                    statement.setString(2, dataprocess[1].toString());
+                    statement.setString(3, dataprocess[1].toString());
+                    statement.setString(4, dataprocess[1].toString());
+                    statement.setString(5, dataprocess[1].toString());
+                    statement.addBatch();
+                }
+            }catch (Exception ex){
+                ex.printStackTrace();
+            }
+            statement.executeBatch();
             logger.info("Query : "+query);
             return true;
         }catch (SQLException exception){
